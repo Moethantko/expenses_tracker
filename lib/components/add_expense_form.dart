@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -25,7 +24,8 @@ class _AddExpenseForm extends State<AddExpenseForm> {
         initialDate: DateTime.now(),
         firstDate: DateTime(2015),
         lastDate: DateTime(2050));
-    if (pickedDate != null && pickedDate != DateTime.now()) {
+    if (pickedDate != null) {
+      _selectedDate = pickedDate;
       _dateFieldController
         ..text = DateFormat.yMMMd().format(_selectedDate)
         ..selection = TextSelection.fromPosition(TextPosition(
@@ -37,7 +37,7 @@ class _AddExpenseForm extends State<AddExpenseForm> {
   _showAddExpenseForm(context) {
 
     int price = 0;
-    String selectedCategory = 'Food';
+    String _selectedCategory = 'Food';
 
     Alert(
         context: context,
@@ -53,11 +53,11 @@ class _AddExpenseForm extends State<AddExpenseForm> {
                     child: ButtonTheme(
                       alignedDropdown: true,
                       child: DropdownButton<String>(
-                        value: selectedCategory,
+                        value: _selectedCategory,
                         style: const TextStyle(color: Colors.green),
                         onChanged: (String? newValue) {
                           setState(() {
-                            selectedCategory = newValue!;
+                            _selectedCategory = newValue!;
                           });
                         },
                         items: <String>['Food','Entertainment', 'Health', 'Education', 'Fashion', 'Subscriptions']
@@ -99,7 +99,7 @@ class _AddExpenseForm extends State<AddExpenseForm> {
             onPressed: () => {
               Navigator.pop(context),
               FirebaseFirestore.instance.collection('expenses').add({
-                'category': selectedCategory,
+                'category': _selectedCategory,
                 'price': price,
                 'date': _dateFieldController.text
               })
