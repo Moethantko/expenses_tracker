@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
         future: _fbApp,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            print("You have an error!!");
             return const Text("Something went wrong.");
           } else if (snapshot.hasData){
             return HomeScreen(title: "Expenses Tracker");

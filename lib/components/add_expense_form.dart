@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/helpers/dateHelper.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,6 +39,8 @@ class _AddExpenseForm extends State<AddExpenseForm> {
 
     int price = 0;
     String _selectedCategory = 'Food';
+
+    DateHelper dateHelper = DateHelper();
 
     Alert(
         context: context,
@@ -101,9 +104,10 @@ class _AddExpenseForm extends State<AddExpenseForm> {
               FirebaseFirestore.instance.collection('expenses').add({
                 'category': _selectedCategory,
                 'price': price,
-                'date': _dateFieldController.text
-              })
-              //print(_dateFieldController.text)
+                'date': _dateFieldController.text,
+                'year': dateHelper.retrieveYear(_dateFieldController.text),
+                'month': dateHelper.retrieveMonth(_dateFieldController.text)
+              }),
             },
             child: const Text(
               "Add Expense",

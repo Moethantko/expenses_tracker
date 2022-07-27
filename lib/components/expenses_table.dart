@@ -5,14 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ExpensesTable extends StatelessWidget {
   const ExpensesTable({Key? key}) : super(key: key);
 
-  /*void expensesDataStream () async {
-    await for (var snapshot in FirebaseFirestore.instance.collection('expenses').snapshots()) {
-      for (var expense in snapshot.docs) {
-        print(expense.data());
-      }
-    }
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Container(

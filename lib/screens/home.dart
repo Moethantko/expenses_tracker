@@ -18,17 +18,17 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       body: Column(
         children: [
           Center(
             child: Container(
-                margin: EdgeInsets.only(top: 20.0),
+                margin: const EdgeInsets.only(top: 20.0),
                 alignment: Alignment.center,
-                child: Text(
-                  "Allowance",
+                child: const Text(
+                  "Total Spending",
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.green,
@@ -38,15 +38,15 @@ class _HomeScreen extends State<HomeScreen> {
           ),
           Center(
             child: Container(
-              padding: EdgeInsets.all(5),
-              margin: EdgeInsets.only(top: 15.0),
+              padding: const EdgeInsets.all(5),
+              margin: const EdgeInsets.only(top: 15.0),
               decoration: BoxDecoration(
                   color: Colors.green,
                   borderRadius: BorderRadius.circular(5)
               ),
               child: Text(
-                new String.fromCharCodes(new Runes('\u0024')) + "3000.0",
-                style: TextStyle(
+                "${String.fromCharCodes(Runes('\u0024'))}3000.0",
+                style: const TextStyle(
                   fontSize: 27,
                   color: Colors.white,
                 ),
