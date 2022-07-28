@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/components/expenses_table.dart';
 import 'package:personal_expenses_tracker/components/add_expense_form.dart';
+import 'package:personal_expenses_tracker/helpers/filterHelper.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key, required this.title}) : super(key: key);
@@ -12,14 +14,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  
+  FilterHelper filterHelper = FilterHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(color: Colors.white),
-        ),
+        title: Row(
+          children: [
+            Text(
+              widget.title,
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(width: 125,),
+            ElevatedButton(
+              onPressed: () {
+                filterHelper.showFormForFiltering(context);
+              },
+              child: const Text(
+                  'Filter',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        )
       ),
       body: Column(
         children: [

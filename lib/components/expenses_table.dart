@@ -10,7 +10,9 @@ class ExpensesTable extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 40),
       child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('expenses').snapshots(),
+        stream: FirebaseFirestore.instance.collection('expenses')
+            .where("year", isEqualTo: 2022)
+            .where("month", isEqualTo: "Jan").snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
@@ -31,7 +33,8 @@ class ExpensesTable extends StatelessWidget {
             List<TableRowItem> rowItemWidgets = [];
 
             final category = expense.get('category');
-            final price = expense.get('price').toString();
+            //final price = expense.get('price').toString();
+            final price = "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
             final date = expense.get('date').toString();
 
             rowItemWidgets.add(TableRowItem(itemName: category, color: Colors.white, textColor: Colors.green,));
