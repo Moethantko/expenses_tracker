@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:personal_expenses_tracker/data/data.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseHelper {
   storeExpenseData(Expense expense) {

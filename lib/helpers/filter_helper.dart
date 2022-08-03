@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
-import 'package:personal_expenses_tracker/main.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../data/data.dart';
 import 'firebase_helper.dart';
 
 class FilterHelper {
@@ -11,7 +11,6 @@ class FilterHelper {
   FirebaseHelper firebaseHelper = FirebaseHelper();
 
   showFormForFiltering(BuildContext context) {
-
     firebaseHelper.retrieveYearsFromDB();
     firebaseHelper.retrieveMonthsFromDB();
 
@@ -88,7 +87,7 @@ class FilterHelper {
               //Navigator.of(context).pop(),
               GlobalVariablesHelper.yearForDataFilter = _selectedYear,
               GlobalVariablesHelper.monthForDataFilter = _seletedMonth,
-              Provider.of<ExpensesData>(context, listen: false).updateSnaps(),
+              Provider.of<Data>(context, listen: false).updateSnaps(),
               Navigator.pop(context),
             },
             child: const Text(

@@ -5,6 +5,7 @@ import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import './screens/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'data/data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => ExpensesData(),
+      create: (context) => Data(),
       child: MaterialApp(
         title: 'Personal Expenses Tracker',
         theme: ThemeData(
@@ -40,15 +41,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ExpensesData extends ChangeNotifier {
-  FirebaseHelper firebaseHelper = FirebaseHelper();
-  late Stream<QuerySnapshot<Map<String, dynamic>>> snaps =
-      firebaseHelper.filterExpensesDataByYearMonth(GlobalVariablesHelper.yearForDataFilter, GlobalVariablesHelper.monthForDataFilter);
 
-  void updateSnaps() {
-    snaps = firebaseHelper.filterExpensesDataByYearMonth(GlobalVariablesHelper.yearForDataFilter, GlobalVariablesHelper.monthForDataFilter);
-    notifyListeners();
-  }
-}
 
 

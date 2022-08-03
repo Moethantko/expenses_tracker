@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/components/category_dropdown.dart';
+import 'package:personal_expenses_tracker/data/data.dart';
 import 'package:personal_expenses_tracker/helpers/date_helper.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,7 +43,6 @@ class _AddExpenseForm extends State<AddExpenseForm> {
 
   _showAddExpenseForm(context) {
 
-    String _selectedCategory = 'Food';
     int price = 0;
     DateHelper dateHelper = DateHelper();
     FirebaseHelper firebaseHelper = FirebaseHelper();
@@ -50,35 +52,7 @@ class _AddExpenseForm extends State<AddExpenseForm> {
         title: "Add Expense",
         content: Column(
           children: <Widget>[
-            Row(
-              children: [
-                const Icon(Icons.category, color: Colors.green,),
-                SizedBox(
-                  width: 230,
-                  child: DropdownButtonHideUnderline(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButton<String>(
-                        value: _selectedCategory,
-                        style: const TextStyle(color: Colors.green),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedCategory = newValue!;
-                          });
-                        },
-                        items: <String>['Food','Entertainment', 'Health', 'Education', 'Fashion', 'Subscriptions']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            const CategoryDropdown(),
             TextField(
               keyboardType: TextInputType.number,
               onChanged: (value) {
@@ -104,7 +78,7 @@ class _AddExpenseForm extends State<AddExpenseForm> {
           DialogButton(
             onPressed: () => {
               Navigator.pop(context),
-              firebaseHelper.storeExpenseData(Expense(category: _selectedCategory,
+              firebaseHelper.storeExpenseData(Expense(category: Provider.of<Data>(context, listen: false).currentSelectedCategory,
                   price: price,
                   date: _dateFieldController.text,
                   year: dateHelper.retrieveYear(_dateFieldController.text),

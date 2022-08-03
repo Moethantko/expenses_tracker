@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:personal_expenses_tracker/main.dart';
 import 'package:provider/provider.dart';
 
+import '../data/data.dart';
+
 class ExpensesTable extends StatefulWidget {
   const ExpensesTable({Key? key}) : super(key: key);
 
@@ -17,7 +19,7 @@ class _ExpensesTable extends State<ExpensesTable> {
     return Container (
       margin: const EdgeInsets.only(top: 40),
       child: StreamBuilder<QuerySnapshot>(
-        stream: Provider.of<ExpensesData>(context).snaps,
+        stream: Provider.of<Data>(context).snaps,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
