@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:personal_expenses_tracker/main.dart';
+import 'package:provider/provider.dart';
 
-class ExpensesTable extends StatelessWidget {
+class ExpensesTable extends StatefulWidget {
   const ExpensesTable({Key? key}) : super(key: key);
 
   @override
+  State<ExpensesTable> createState() => _ExpensesTable();
+}
+
+class _ExpensesTable extends State<ExpensesTable> {
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
+    return Container (
       margin: const EdgeInsets.only(top: 40),
       child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('expenses')
-            .where("year", isEqualTo: 2022)
-            .where("month", isEqualTo: "Jan").snapshots(),
+        stream: Provider.of<ExpensesData>(context).snaps,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
@@ -33,7 +38,6 @@ class ExpensesTable extends StatelessWidget {
             List<TableRowItem> rowItemWidgets = [];
 
             final category = expense.get('category');
-            //final price = expense.get('price').toString();
             final price = "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
             final date = expense.get('date').toString();
 

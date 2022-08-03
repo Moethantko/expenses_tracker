@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
+import 'package:personal_expenses_tracker/main.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase_helper.dart';
 
 class FilterHelper {
-  final List<String> _allYearsData = <String>[];
-  final List<String> _allMonthsData = <String>[];
+
+  FirebaseHelper firebaseHelper = FirebaseHelper();
 
   showFormForFiltering(BuildContext context) {
 
-    retrieveYearsFromDB();
-    retrieveMonthsFromDB();
+    firebaseHelper.retrieveYearsFromDB();
+    firebaseHelper.retrieveMonthsFromDB();
 
-    for (var temp in _allMonthsData) {
-      print(temp);
-    }
-
-    String _selectedYear = '2022';
+    int _selectedYear = 2022;
     String _seletedMonth = 'Jan';
 
     Alert(
@@ -31,17 +31,17 @@ class FilterHelper {
                   child: DropdownButtonHideUnderline(
                     child: ButtonTheme(
                       alignedDropdown: true,
-                      child: DropdownButton<String>(
+                      child: DropdownButton<int>(
                         value: _selectedYear,
                         style: const TextStyle(color: Colors.green),
-                        onChanged: (String? newValue) {
+                        onChanged: (int? newValue) {
                           _selectedYear = newValue!;
                         },
-                        items: _allYearsData
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
+                        items: GlobalVariablesHelper.allYearsData
+                            .map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
                             value: value,
-                            child: Text(value),
+                            child: Text(value.toString()),
                           );
                         }).toList(),
                       ),
@@ -67,7 +67,7 @@ class FilterHelper {
                         onChanged: (String? newValue) {
                           _seletedMonth = newValue!;
                           },
-                        items: _allMonthsData
+                        items: GlobalVariablesHelper.allMonthsData
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -85,7 +85,11 @@ class FilterHelper {
         buttons: [
           DialogButton(
             onPressed: () => {
-              Navigator.of(context).pop(),
+              //Navigator.of(context).pop(),
+              GlobalVariablesHelper.yearForDataFilter = _selectedYear,
+              GlobalVariablesHelper.monthForDataFilter = _seletedMonth,
+              Provider.of<ExpensesData>(context, listen: false).updateSnaps(),
+              Navigator.pop(context),
             },
             child: const Text(
               "Filter",
@@ -95,28 +99,18 @@ class FilterHelper {
         ]).show();
   }
 
-  retrieveYearsFromDB() async {
+  /*Future<int> retrieveTotalSpending() async {
+    int total = 0;
     await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
       final docs = element.docs;
       for (var doc in docs) {
-        final year = doc.get('year').toString();
-        if (!_allYearsData.contains(year)) {
-          _allYearsData.add(year);
-        }
+        int price = doc.get('price');
+        total += price;
       }
     });
-  }
 
-  retrieveMonthsFromDB() async {
-    await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
-      final docs = element.docs;
-      for (var doc in docs) {
-        final month = doc.get('month').toString();
-        if (!_allMonthsData.contains(month)) {
-          _allMonthsData.add(month);
-        }
-      }
-    });
-  }
+    print('Total Spending = ${total}');
+    return total;
+  }*/
 
 }

@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:personal_expenses_tracker/helpers/dateHelper.dart';
+import 'package:personal_expenses_tracker/helpers/date_helper.dart';
+import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
+import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
+import 'package:personal_expenses_tracker/models/expense.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,10 +40,10 @@ class _AddExpenseForm extends State<AddExpenseForm> {
 
   _showAddExpenseForm(context) {
 
-    int price = 0;
     String _selectedCategory = 'Food';
-
+    int price = 0;
     DateHelper dateHelper = DateHelper();
+    FirebaseHelper firebaseHelper = FirebaseHelper();
 
     Alert(
         context: context,
@@ -49,7 +52,7 @@ class _AddExpenseForm extends State<AddExpenseForm> {
           children: <Widget>[
             Row(
               children: [
-              const Icon(Icons.category, color: Colors.green,),
+                const Icon(Icons.category, color: Colors.green,),
                 SizedBox(
                   width: 230,
                   child: DropdownButtonHideUnderline(
@@ -101,13 +104,11 @@ class _AddExpenseForm extends State<AddExpenseForm> {
           DialogButton(
             onPressed: () => {
               Navigator.pop(context),
-              FirebaseFirestore.instance.collection('expenses').add({
-                'category': _selectedCategory,
-                'price': price,
-                'date': _dateFieldController.text,
-                'year': dateHelper.retrieveYear(_dateFieldController.text),
-                'month': dateHelper.retrieveMonth(_dateFieldController.text)
-              }),
+              firebaseHelper.storeExpenseData(Expense(category: _selectedCategory,
+                  price: price,
+                  date: _dateFieldController.text,
+                  year: dateHelper.retrieveYear(_dateFieldController.text),
+                  month: dateHelper.retrieveMonth(_dateFieldController.text))),
             },
             child: const Text(
               "Add Expense",
