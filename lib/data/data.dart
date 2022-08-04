@@ -25,16 +25,10 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  /*List<int> allYearsData = <int>[];
-  void populateAllYearsData () {
-    //allYearsData = firebaseHelper.retrieveYearsFromDB();
+  String currentSelectedMonth = 'Jul';
+  void updateCurrentSelectedMonth (String newValue) {
+    currentSelectedMonth = newValue;
     notifyListeners();
   }
-
-  List<String> allMonthsData = <String>[];
-  void populateAllMonthsData () {
-    allMonthsData = firebaseHelper.retrieveMonthsFromDB();
-    notifyListeners();
-  }*/
 
 }
