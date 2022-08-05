@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/components/expenses_table.dart';
 import 'package:personal_expenses_tracker/components/add_expense_form.dart';
 import 'package:personal_expenses_tracker/components/filter_form.dart';
+import 'package:personal_expenses_tracker/data/data.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -19,6 +21,10 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    firebaseHelper.retrieveYearsFromDB();
+    firebaseHelper.retrieveMonthsFromDB();
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -71,3 +77,4 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 }
+

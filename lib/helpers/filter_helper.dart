@@ -40,19 +40,4 @@ class FilterHelper {
           )
         ]).show();
   }
-
-  /*Future<int> retrieveTotalSpending() async {
-    int total = 0;
-    await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
-      final docs = element.docs;
-      for (var doc in docs) {
-        int price = doc.get('price');
-        total += price;
-      }
-    });
-
-    print('Total Spending = ${total}');
-    return total;
-  }*/
-
 }

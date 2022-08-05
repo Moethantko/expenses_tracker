@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/data/data.dart';
-import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -13,13 +12,12 @@ class FilterYearDropdown extends StatefulWidget {
 
 class _FilterYearDropdownState extends State<FilterYearDropdown> {
 
-  int _selectedYear = 2022;
-  FirebaseHelper firebaseHelper = FirebaseHelper();
+  int _selectedYear = GlobalVariablesHelper.allYearsData.elementAt(0);
 
   @override
   Widget build(BuildContext context) {
 
-    firebaseHelper.retrieveYearsFromDB();
+    //firebaseHelper.retrieveYearsFromDB();
 
     return Row(
       children: [

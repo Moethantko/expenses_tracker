@@ -76,13 +76,18 @@ class _AddExpenseForm extends State<AddExpenseForm> {
         ),
         buttons: [
           DialogButton(
-            onPressed: () => {
+            onPressed: () async => {
               Navigator.pop(context),
               firebaseHelper.storeExpenseData(Expense(category: Provider.of<Data>(context, listen: false).currentSelectedCategory,
                   price: price,
                   date: _dateFieldController.text,
                   year: dateHelper.retrieveYear(_dateFieldController.text),
                   month: dateHelper.retrieveMonth(_dateFieldController.text))),
+
+              firebaseHelper.storeSpendingData(
+                  dateHelper.retrieveYear(_dateFieldController.text),
+                  dateHelper.retrieveMonth(_dateFieldController.text),
+                  price),
             },
             child: const Text(
               "Add Expense",

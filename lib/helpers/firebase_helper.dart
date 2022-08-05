@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:personal_expenses_tracker/data/data.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
-import 'package:provider/provider.dart';
 
 class FirebaseHelper {
   storeExpenseData(Expense expense) {
@@ -13,6 +11,30 @@ class FirebaseHelper {
       'year': expense.year,
       'month': expense.month
     });
+  }
+  
+  Future<void> storeSpendingData(int year, String month, int spending) async {
+
+    int totalSpending = 0;
+    //print("Hello. It's herereerererer");
+
+    await FirebaseFirestore.instance.collection('total_spendings')
+        .where('year', isEqualTo: year)
+        .where('month', isEqualTo: month)
+        .snapshots().forEach((element) {
+          final docs = element.docs;
+          for (var doc in docs) {
+            totalSpending += int.parse(doc.get('total_spending').toString());
+            print("Hello. It's total...${totalSpending}");
+          }
+        }).then((value) => {
+          print("async function above is completed....."),
+          FirebaseFirestore.instance.collection('total_spendings').add({
+            'year': year,
+            'month': month,
+            'total_spending': totalSpending + spending
+          }),
+        });
   }
 
   retrieveYearsFromDB() async {
@@ -44,5 +66,24 @@ class FirebaseHelper {
         .where("year", isEqualTo: selectedYear)
         .where("month", isEqualTo: selectedMonth).snapshots();
   }
+  
+  /*Future<int> calculateTotalSpending (selectedYear, selectedMonth) async {
+    
+    Future<int> totalSpending = 0;
+    
+    await FirebaseFirestore.instance.collection('expenses')
+        .where("year", isEqualTo: selectedYear)
+        .where("month", isEqualTo: selectedMonth).snapshots()
+        .forEach((element) { 
+          final docs = element.docs;
+          for (var doc in docs) {
+            totalSpending += int.parse(doc.get('price').toString());
+          }
+        });
+
+    print("it's hereeeeeee: ${totalSpending}");
+    
+    return totalSpending;
+  }*/
 
 }

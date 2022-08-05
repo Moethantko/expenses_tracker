@@ -31,4 +31,10 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
+  /*late Future<int> totalSpending;
+  Future<int> retrieveTotalSpending () async {
+    totalSpending = await firebaseHelper.calculateTotalSpending(GlobalVariablesHelper.yearForDataFilter, GlobalVariablesHelper.monthForDataFilter);
+    return totalSpending;
+  }*/
+
 }

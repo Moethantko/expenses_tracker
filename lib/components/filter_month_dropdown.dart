@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../data/data.dart';
-import '../helpers/firebase_helper.dart';
 import '../helpers/global_variables_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -13,13 +12,12 @@ class FilterMonthDropdown extends StatefulWidget {
 
 class _FilterMonthDropdownState extends State<FilterMonthDropdown> {
 
-  String _seletedMonth = 'Jan';
-  FirebaseHelper firebaseHelper = FirebaseHelper();
+  String _seletedMonth = GlobalVariablesHelper.allMonthsData.elementAt(0);
 
   @override
   Widget build(BuildContext context) {
 
-    firebaseHelper.retrieveMonthsFromDB();
+    //firebaseHelper.retrieveMonthsFromDB();
 
     return Row(
       children: [

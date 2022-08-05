@@ -13,9 +13,11 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider(
       create: (context) => Data(),
       child: MaterialApp(
