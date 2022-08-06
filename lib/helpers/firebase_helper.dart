@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
 
@@ -13,8 +14,7 @@ class FirebaseHelper {
     });
   }
   
-  Future<void> storeSpendingData(int year, String month, int spending) async {
-
+  /*Future<void> storeSpendingData(int year, String month, int spending) async {
     int totalSpending = 0;
     //print("Hello. It's herereerererer");
 
@@ -35,6 +35,13 @@ class FirebaseHelper {
             'total_spending': totalSpending + spending
           }),
         });
+  }*/
+
+  deleteSelectedExpenseData(String id) {
+    FirebaseFirestore.instance.collection("expenses").doc(id).delete().then(
+          (doc) => print("Document deleted"),
+      onError: (e) => print("Error updating document $e"),
+    );
   }
 
   retrieveYearsFromDB() async {
@@ -66,24 +73,20 @@ class FirebaseHelper {
         .where("year", isEqualTo: selectedYear)
         .where("month", isEqualTo: selectedMonth).snapshots();
   }
-  
-  /*Future<int> calculateTotalSpending (selectedYear, selectedMonth) async {
-    
-    Future<int> totalSpending = 0;
-    
-    await FirebaseFirestore.instance.collection('expenses')
+
+  /*calculateTotalSpending(selectedYear, selectedMonth) {
+    int totalSpending = 0;
+    FirebaseFirestore.instance.collection('expenses')
         .where("year", isEqualTo: selectedYear)
-        .where("month", isEqualTo: selectedMonth).snapshots()
-        .forEach((element) { 
+        .where("month", isEqualTo: selectedMonth)
+        .snapshots()
+        .forEach((element) {
           final docs = element.docs;
           for (var doc in docs) {
-            totalSpending += int.parse(doc.get('price').toString());
+            //totalSpending += int.parse(doc.get('price').toString());
           }
-        });
-
-    print("it's hereeeeeee: ${totalSpending}");
-    
-    return totalSpending;
+        }).then((value) => {
+    print("it's hereeeeeee: ${totalSpending}"),
+    });
   }*/
-
 }

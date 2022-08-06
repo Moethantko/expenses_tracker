@@ -12,12 +12,16 @@ class FilterMonthDropdown extends StatefulWidget {
 
 class _FilterMonthDropdownState extends State<FilterMonthDropdown> {
 
-  String _seletedMonth = GlobalVariablesHelper.allMonthsData.elementAt(0);
-
   @override
   Widget build(BuildContext context) {
 
-    //firebaseHelper.retrieveMonthsFromDB();
+    String _selectedMonth;
+
+    if (GlobalVariablesHelper.allMonthsData.isNotEmpty) {
+      _selectedMonth = GlobalVariablesHelper.allMonthsData.elementAt(0);
+    } else {
+      _selectedMonth = '';
+    }
 
     return Row(
       children: [
@@ -28,11 +32,11 @@ class _FilterMonthDropdownState extends State<FilterMonthDropdown> {
             child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButton<String>(
-                value: _seletedMonth,
+                value: _selectedMonth,
                 style: const TextStyle(color: Colors.green),
                 onChanged: (String? newValue) {
                   setState(() {
-                    _seletedMonth = newValue!;
+                    _selectedMonth = newValue!;
                     Provider.of<Data>(context, listen: false).updateCurrentSelectedMonth(newValue);
                   });
                 },

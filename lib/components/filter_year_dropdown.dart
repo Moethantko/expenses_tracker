@@ -12,12 +12,17 @@ class FilterYearDropdown extends StatefulWidget {
 
 class _FilterYearDropdownState extends State<FilterYearDropdown> {
 
-  int _selectedYear = GlobalVariablesHelper.allYearsData.elementAt(0);
-
   @override
   Widget build(BuildContext context) {
 
-    //firebaseHelper.retrieveYearsFromDB();
+    int _selectedYear;
+
+    if (GlobalVariablesHelper.allYearsData.isNotEmpty) {
+      _selectedYear = GlobalVariablesHelper.allYearsData.elementAt(0);
+    } else {
+      _selectedYear = 0;
+    }
+
 
     return Row(
       children: [
