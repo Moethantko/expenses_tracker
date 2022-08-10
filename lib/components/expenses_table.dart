@@ -70,6 +70,8 @@ class TableRowItem extends StatelessWidget {
       return GestureDetector(
         onTap: () {
           firebaseHelper.deleteSelectedExpenseData(id);
+          Provider.of<Data>(context, listen: false)
+              .updateTotalSpending(context);
         },
         child: Container(
           alignment: Alignment.center,

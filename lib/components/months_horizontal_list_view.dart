@@ -38,6 +38,8 @@ List<Widget> buildMonthContainersList(BuildContext context) {
         onTap: () => {
           GlobalVariablesHelper.monthForDataFilter = month,
           Provider.of<Data>(context, listen: false).updateSnaps(),
+          Provider.of<Data>(context, listen: false)
+              .updateTotalSpending(context),
         },
         child: Container(
           alignment: Alignment.center,

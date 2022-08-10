@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/components/add_expense_form.dart';
-import 'package:personal_expenses_tracker/components/filter_form.dart';
 import 'package:personal_expenses_tracker/components/months_horizontal_list_view.dart';
 import 'package:personal_expenses_tracker/components/years_horizontal_list_view.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
+import 'package:provider/provider.dart';
 
 import '../components/expenses_table.dart';
+import '../data/data.dart';
+import '../helpers/global_variables_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -22,6 +24,10 @@ class _HomeScreen extends State<HomeScreen> {
   Widget build(BuildContext context) {
     firebaseHelper.retrieveYearsFromDB(context);
     firebaseHelper.retrieveMonthsFromDB();
+    firebaseHelper.calculateTotalSpending(
+        GlobalVariablesHelper.yearForDataFilter,
+        GlobalVariablesHelper.monthForDataFilter,
+        context);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,16 +40,13 @@ class _HomeScreen extends State<HomeScreen> {
             const SizedBox(
               width: 125,
             ),
-            const FilterForm(),
           ],
         ),
       ),
       body: Column(
         children: [
           const YearsHorizontalListView(),
-          const SizedBox(
-            height: 0.5,
-          ),
+          const SizedBox(height: 0.5),
           const MonthsHorizontalListView(),
           Center(
             child: Container(
@@ -64,7 +67,7 @@ class _HomeScreen extends State<HomeScreen> {
               decoration: BoxDecoration(
                   color: Colors.green, borderRadius: BorderRadius.circular(5)),
               child: Text(
-                "${String.fromCharCodes(Runes('\u0024'))}3000.0",
+                "${String.fromCharCodes(Runes('\u0024'))}${Provider.of<Data>(context, listen: true).totalSpending}",
                 style: const TextStyle(
                   fontSize: 27,
                   color: Colors.white,

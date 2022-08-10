@@ -37,6 +37,8 @@ List<Widget> buildYearContainersList(BuildContext context) {
         onTap: () => {
           GlobalVariablesHelper.yearForDataFilter = year,
           Provider.of<Data>(context, listen: false).updateSnaps(),
+          Provider.of<Data>(context, listen: false)
+              .updateTotalSpending(context),
         },
         child: Container(
           alignment: Alignment.center,

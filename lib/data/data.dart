@@ -24,12 +24,6 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  int currentSelectedYear = 2022;
-  void updateCurrentSelectedYear(int newValue) {
-    currentSelectedYear = newValue;
-    notifyListeners();
-  }
-
   List<int> allYearsData = [2019, 2020, 2021, 2022];
   updateAllYearsData(BuildContext context) {
     allYearsData.add(Provider.of<Data>(context, listen: false).latestAddedYear);
@@ -50,23 +44,18 @@ class Data extends ChangeNotifier {
     'Sep',
     'Oct',
     'Nov',
-    'Dec'
+    'Dec',
   ];
 
   int latestAddedYear = 2022;
 
-  String currentSelectedMonth = 'Jul';
-  void updateCurrentSelectedMonth(String newValue) {
-    currentSelectedMonth = newValue;
-    notifyListeners();
-  }
-
-  late Future<int> totalSpending;
-  Future<void> retrieveTotalSpending() async {
-    /*totalSpending = await firebaseHelper.calculateTotalSpending(
+  int totalSpending = 0;
+  void updateTotalSpending(BuildContext context) async {
+    await firebaseHelper.calculateTotalSpending(
         GlobalVariablesHelper.yearForDataFilter,
-        GlobalVariablesHelper.monthForDataFilter);*/
-    print("Hello, I'm in provider");
+        GlobalVariablesHelper.monthForDataFilter,
+        context);
     notifyListeners();
+    print("hello it's here");
   }
 }

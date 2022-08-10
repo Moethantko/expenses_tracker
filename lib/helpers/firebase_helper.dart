@@ -64,49 +64,21 @@ class FirebaseHelper {
         .snapshots();
   }
 
-  /*Future<int?> calculateTotalSpending(selectedYear, selectedMonth) async {
-    Future<int?> futureTotalSpending = 0;
+  calculateTotalSpending(selectedYear, selectedMonth, context) async {
     int totalSpending = 0;
 
-    try {
-      await FirebaseFirestore.instance
-          .collection('expenses')
-          .where("year", isEqualTo: selectedYear)
-          .where("month", isEqualTo: selectedMonth)
-          .snapshots()
-          .forEach((snap) {
-        final docs = snap.docs;
-        for (var doc in docs) {
-          totalSpending += int.parse(doc.get('price').toString());
-        }
-        //GlobalVariablesHelper.totalSpending = totalSpending;
-      });
-      futureTotalSpending = totalSpending;
-      //print("Total: $totalSpending");
-    } catch (err) {
-      print(err);
+    final result =
+        await FirebaseFirestore.instance.collection('expenses').get();
+    for (final doc in result.docs) {
+      totalSpending += int.parse(doc.get('price').toString());
     }
+    Provider.of<Data>(context, listen: false).totalSpending = totalSpending;
 
-    return futureTotalSpending;
-
-    /*Stream<QuerySnapshot<Map<String, dynamic>>> snaps = filterExpensesDataByYearMonth(selectedYear, selectedMonth);
-    await for (var snap in snaps) {
-      final docs = snap.docs;
-      for (var doc in docs) {
-        totalSpending += int.parse(doc.get('price').toString());
-      }
-      //GlobalVariablesHelper.totalSpending = totalSpending;
-    }
-
-    return totalSpending;*/
-    //print("Testinggggg");
-
-    /*await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
-      final docs = element.docs;
-      for (var doc in docs) {
-        final month = doc.get('month').toString();
-        print("In the calculate spending function...$month");
-      }
-    });*/
-  }*/
+    /*FirebaseFirestore.instance.collection('expenses').get().then((value) => {
+          for (var doc in value.docs)
+            {totalSpending += int.parse(doc.get('price').toString())},
+          Provider.of<Data>(context, listen: false).totalSpending =
+              totalSpending,
+        });*/
+  }
 }

@@ -90,6 +90,8 @@ class _AddExpenseForm extends State<AddExpenseForm> {
                   month: dateHelper.retrieveMonth(_dateFieldController.text))),
               Provider.of<Data>(context, listen: false)
                   .updateAllYearsData(context),
+              Provider.of<Data>(context, listen: false)
+                  .updateTotalSpending(context),
               Navigator.pop(context),
             },
             child: const Text(
