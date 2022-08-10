@@ -3,4 +3,5 @@ class GlobalVariablesHelper {
   static var monthForDataFilter = 'Aug';
   static List<int> allYearsData = <int>[];
   static List<String> allMonthsData = <String>[];
+  static var totalSpending = 0;
 }

@@ -1,16 +1,12 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_expenses_tracker/components/category_dropdown.dart';
 import 'package:personal_expenses_tracker/data/data.dart';
 import 'package:personal_expenses_tracker/helpers/date_helper.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
-import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 
 class AddExpenseForm extends StatefulWidget {
   const AddExpenseForm({Key? key}) : super(key: key);
@@ -21,9 +17,9 @@ class AddExpenseForm extends StatefulWidget {
 }
 
 class _AddExpenseForm extends State<AddExpenseForm> {
-
   DateTime _selectedDate = DateTime.now();
   final TextEditingController _dateFieldController = TextEditingController();
+  DateHelper dateHelper = DateHelper();
 
   _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -38,14 +34,17 @@ class _AddExpenseForm extends State<AddExpenseForm> {
         ..selection = TextSelection.fromPosition(TextPosition(
             offset: _dateFieldController.text.length,
             affinity: TextAffinity.upstream));
+      Provider.of<Data>(context, listen: false).latestAddedYear =
+          dateHelper.retrieveYear(_dateFieldController.text);
     }
   }
 
   _showAddExpenseForm(context) {
-
     int price = 0;
     DateHelper dateHelper = DateHelper();
     FirebaseHelper firebaseHelper = FirebaseHelper();
+
+    //print('Test: ${GlobalVariablesHelper.totalSpending}');
 
     Alert(
         context: context,
@@ -59,16 +58,21 @@ class _AddExpenseForm extends State<AddExpenseForm> {
                 price = int.parse(value);
               },
               decoration: const InputDecoration(
-                icon: Icon(Icons.attach_money, color: Colors.green,),
+                icon: Icon(
+                  Icons.attach_money,
+                  color: Colors.green,
+                ),
                 labelText: 'Price',
               ),
             ),
-
             TextField(
               onTap: () => _selectDate(context),
               controller: _dateFieldController,
               decoration: const InputDecoration(
-                icon: Icon(Icons.today, color: Colors.green,),
+                icon: Icon(
+                  Icons.today,
+                  color: Colors.green,
+                ),
                 labelText: 'Date',
               ),
             ),
@@ -78,16 +82,14 @@ class _AddExpenseForm extends State<AddExpenseForm> {
           DialogButton(
             onPressed: () => {
               firebaseHelper.storeExpenseData(Expense(
-                  category: Provider.of<Data>(context, listen: false).currentSelectedCategory,
+                  category: Provider.of<Data>(context, listen: false)
+                      .currentSelectedCategory,
                   price: price,
                   date: _dateFieldController.text,
                   year: dateHelper.retrieveYear(_dateFieldController.text),
                   month: dateHelper.retrieveMonth(_dateFieldController.text))),
-
-              /*firebaseHelper.calculateTotalSpending(
-                  dateHelper.retrieveYear(_dateFieldController.text),
-                  dateHelper.retrieveMonth(_dateFieldController.text)),*/
-
+              Provider.of<Data>(context, listen: false)
+                  .updateAllYearsData(context),
               Navigator.pop(context),
             },
             child: const Text(
@@ -110,6 +112,3 @@ class _AddExpenseForm extends State<AddExpenseForm> {
     );
   }
 }
-
-
-

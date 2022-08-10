@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/data/data.dart';
 import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseHelper {
   storeExpenseData(Expense expense) {
@@ -13,52 +15,37 @@ class FirebaseHelper {
       'month': expense.month
     });
   }
-  
-  /*Future<void> storeSpendingData(int year, String month, int spending) async {
-    int totalSpending = 0;
-    //print("Hello. It's herereerererer");
-
-    await FirebaseFirestore.instance.collection('total_spendings')
-        .where('year', isEqualTo: year)
-        .where('month', isEqualTo: month)
-        .snapshots().forEach((element) {
-          final docs = element.docs;
-          for (var doc in docs) {
-            totalSpending += int.parse(doc.get('total_spending').toString());
-            print("Hello. It's total...${totalSpending}");
-          }
-        }).then((value) => {
-          print("async function above is completed....."),
-          FirebaseFirestore.instance.collection('total_spendings').add({
-            'year': year,
-            'month': month,
-            'total_spending': totalSpending + spending
-          }),
-        });
-  }*/
 
   deleteSelectedExpenseData(String id) {
     FirebaseFirestore.instance.collection("expenses").doc(id).delete().then(
           (doc) => print("Document deleted"),
-      onError: (e) => print("Error updating document $e"),
-    );
+          onError: (e) => print("Error updating document $e"),
+        );
   }
 
-  retrieveYearsFromDB() async {
-    await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
-      final docs = element.docs;
-      for (var doc in docs) {
-        int year = doc.get('year');
-        if (!GlobalVariablesHelper.allYearsData.contains(year)) {
-          GlobalVariablesHelper.allYearsData.add(year);
-        }
-      }
-    });
+  retrieveYearsFromDB(BuildContext context) {
+    FirebaseFirestore.instance.collection('expenses').get().then((value) => {
+          for (var doc in value.docs)
+            {
+              if (!Provider.of<Data>(context, listen: false)
+                  .allYearsData
+                  .contains(doc.get('year')))
+                {
+                  Provider.of<Data>(context, listen: false)
+                      .allYearsData
+                      .add(doc.get('year')),
+                  Provider.of<Data>(context, listen: false).allYearsData.sort(),
+                }
+            }
+        });
   }
 
   retrieveMonthsFromDB() async {
-    await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
-      final docs = element.docs;
+    await FirebaseFirestore.instance
+        .collection('expenses')
+        .snapshots()
+        .forEach((snap) {
+      final docs = snap.docs;
       for (var doc in docs) {
         final month = doc.get('month').toString();
         if (!GlobalVariablesHelper.allMonthsData.contains(month)) {
@@ -68,25 +55,58 @@ class FirebaseHelper {
     });
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> filterExpensesDataByYearMonth(selectedYear, selectedMonth) {
-    return FirebaseFirestore.instance.collection('expenses')
-        .where("year", isEqualTo: selectedYear)
-        .where("month", isEqualTo: selectedMonth).snapshots();
-  }
-
-  /*calculateTotalSpending(selectedYear, selectedMonth) {
-    int totalSpending = 0;
-    FirebaseFirestore.instance.collection('expenses')
+  Stream<QuerySnapshot<Map<String, dynamic>>> filterExpensesDataByYearMonth(
+      selectedYear, selectedMonth) {
+    return FirebaseFirestore.instance
+        .collection('expenses')
         .where("year", isEqualTo: selectedYear)
         .where("month", isEqualTo: selectedMonth)
-        .snapshots()
-        .forEach((element) {
-          final docs = element.docs;
-          for (var doc in docs) {
-            //totalSpending += int.parse(doc.get('price').toString());
-          }
-        }).then((value) => {
-    print("it's hereeeeeee: ${totalSpending}"),
-    });
+        .snapshots();
+  }
+
+  /*Future<int?> calculateTotalSpending(selectedYear, selectedMonth) async {
+    Future<int?> futureTotalSpending = 0;
+    int totalSpending = 0;
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('expenses')
+          .where("year", isEqualTo: selectedYear)
+          .where("month", isEqualTo: selectedMonth)
+          .snapshots()
+          .forEach((snap) {
+        final docs = snap.docs;
+        for (var doc in docs) {
+          totalSpending += int.parse(doc.get('price').toString());
+        }
+        //GlobalVariablesHelper.totalSpending = totalSpending;
+      });
+      futureTotalSpending = totalSpending;
+      //print("Total: $totalSpending");
+    } catch (err) {
+      print(err);
+    }
+
+    return futureTotalSpending;
+
+    /*Stream<QuerySnapshot<Map<String, dynamic>>> snaps = filterExpensesDataByYearMonth(selectedYear, selectedMonth);
+    await for (var snap in snaps) {
+      final docs = snap.docs;
+      for (var doc in docs) {
+        totalSpending += int.parse(doc.get('price').toString());
+      }
+      //GlobalVariablesHelper.totalSpending = totalSpending;
+    }
+
+    return totalSpending;*/
+    //print("Testinggggg");
+
+    /*await FirebaseFirestore.instance.collection('expenses').snapshots().forEach((element) {
+      final docs = element.docs;
+      for (var doc in docs) {
+        final month = doc.get('month').toString();
+        print("In the calculate spending function...$month");
+      }
+    });*/
   }*/
 }
