@@ -56,6 +56,5 @@ class Data extends ChangeNotifier {
         GlobalVariablesHelper.monthForDataFilter,
         context);
     notifyListeners();
-    print("hello it's here");
   }
 }

@@ -67,18 +67,15 @@ class FirebaseHelper {
   calculateTotalSpending(selectedYear, selectedMonth, context) async {
     int totalSpending = 0;
 
-    final result =
-        await FirebaseFirestore.instance.collection('expenses').get();
+    final result = await FirebaseFirestore.instance
+        .collection('expenses')
+        .where("year", isEqualTo: selectedYear)
+        .where("month", isEqualTo: selectedMonth)
+        .get();
     for (final doc in result.docs) {
       totalSpending += int.parse(doc.get('price').toString());
     }
     Provider.of<Data>(context, listen: false).totalSpending = totalSpending;
-
-    /*FirebaseFirestore.instance.collection('expenses').get().then((value) => {
-          for (var doc in value.docs)
-            {totalSpending += int.parse(doc.get('price').toString())},
-          Provider.of<Data>(context, listen: false).totalSpending =
-              totalSpending,
-        });*/
+    print(Provider.of<Data>(context, listen: false).totalSpending);
   }
 }
