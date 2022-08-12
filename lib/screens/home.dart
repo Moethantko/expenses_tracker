@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../components/expenses_table.dart';
 import '../data/data.dart';
-import '../helpers/global_variables_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -22,12 +21,14 @@ class _HomeScreen extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int currentSelectedYear =
+        Provider.of<Data>(context, listen: true).currentSelectedYear;
+    String currentSelectedMonth =
+        Provider.of<Data>(context, listen: true).currentSelectedMonth;
+
     firebaseHelper.retrieveYearsFromDB(context);
-    firebaseHelper.retrieveMonthsFromDB();
     firebaseHelper.calculateTotalSpending(
-        GlobalVariablesHelper.yearForDataFilter,
-        GlobalVariablesHelper.monthForDataFilter,
-        context);
+        currentSelectedYear, currentSelectedMonth, context);
 
     return Scaffold(
       appBar: AppBar(
@@ -48,18 +49,41 @@ class _HomeScreen extends State<HomeScreen> {
           const YearsHorizontalListView(),
           const SizedBox(height: 0.5),
           const MonthsHorizontalListView(),
-          Center(
-            child: Container(
-                margin: const EdgeInsets.only(top: 20.0),
-                alignment: Alignment.center,
-                child: const Text(
-                  "Total Spending",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.green,
+          Container(
+              margin: const EdgeInsets.only(top: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Total Spending for ',
+                    style: TextStyle(color: Colors.green, fontSize: 16),
                   ),
-                )),
-          ),
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Text(
+                      currentSelectedYear.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      currentSelectedMonth,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              )),
           Center(
             child: Container(
               padding: const EdgeInsets.all(5),

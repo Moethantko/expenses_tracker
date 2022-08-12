@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/data/data.dart';
-import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
 import 'package:personal_expenses_tracker/models/expense.dart';
 import 'package:provider/provider.dart';
 
@@ -23,24 +22,22 @@ class FirebaseHelper {
         );
   }
 
-  retrieveYearsFromDB(BuildContext context) {
-    FirebaseFirestore.instance.collection('expenses').get().then((value) => {
-          for (var doc in value.docs)
-            {
-              if (!Provider.of<Data>(context, listen: false)
-                  .allYearsData
-                  .contains(doc.get('year')))
-                {
-                  Provider.of<Data>(context, listen: false)
-                      .allYearsData
-                      .add(doc.get('year')),
-                  Provider.of<Data>(context, listen: false).allYearsData.sort(),
-                }
-            }
-        });
+  retrieveYearsFromDB(BuildContext context) async {
+    final result =
+        await FirebaseFirestore.instance.collection('expenses').get();
+    for (var doc in result.docs) {
+      if (!Provider.of<Data>(context, listen: false)
+          .allYearsData
+          .contains(doc.get('year'))) {
+        Provider.of<Data>(context, listen: false)
+            .allYearsData
+            .add(doc.get('year'));
+        Provider.of<Data>(context, listen: false).allYearsData.sort();
+      }
+    }
   }
 
-  retrieveMonthsFromDB() async {
+  /*retrieveMonthsFromDB(context) async {
     await FirebaseFirestore.instance
         .collection('expenses')
         .snapshots()
@@ -53,7 +50,7 @@ class FirebaseHelper {
         }
       }
     });
-  }
+  }*/
 
   Stream<QuerySnapshot<Map<String, dynamic>>> filterExpensesDataByYearMonth(
       selectedYear, selectedMonth) {
@@ -76,6 +73,6 @@ class FirebaseHelper {
       totalSpending += int.parse(doc.get('price').toString());
     }
     Provider.of<Data>(context, listen: false).totalSpending = totalSpending;
-    print(Provider.of<Data>(context, listen: false).totalSpending);
+    //print(Provider.of<Data>(context, listen: false).totalSpending);
   }
 }

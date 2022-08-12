@@ -1,20 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
-import 'package:personal_expenses_tracker/helpers/global_variables_helper.dart';
-import 'package:provider/provider.dart';
 
 class Data extends ChangeNotifier {
+  int currentSelectedYear = 2022;
+
+  void updateCurrentSelectedYear(newYear) {
+    currentSelectedYear = newYear;
+    notifyListeners();
+  }
+
+  String currentSelectedMonth = 'Aug';
+
   FirebaseHelper firebaseHelper = FirebaseHelper();
-  late Stream<QuerySnapshot<Map<String, dynamic>>> snaps =
-      firebaseHelper.filterExpensesDataByYearMonth(
-          GlobalVariablesHelper.yearForDataFilter,
-          GlobalVariablesHelper.monthForDataFilter);
+  late Stream<QuerySnapshot<Map<String, dynamic>>> snaps = firebaseHelper
+      .filterExpensesDataByYearMonth(currentSelectedYear, currentSelectedMonth);
 
   void updateSnaps() {
     snaps = firebaseHelper.filterExpensesDataByYearMonth(
-        GlobalVariablesHelper.yearForDataFilter,
-        GlobalVariablesHelper.monthForDataFilter);
+        currentSelectedYear, currentSelectedMonth);
     notifyListeners();
   }
 
@@ -24,11 +28,13 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
+  int latestAddedYear = 2022;
+
   List<int> allYearsData = [2019, 2020, 2021, 2022];
-  updateAllYearsData(BuildContext context) {
-    allYearsData.add(Provider.of<Data>(context, listen: false).latestAddedYear);
+  updateAllYearsData(BuildContext context) async {
+    //allYearsData.add(latestAddedYear);
     allYearsData.sort();
-    firebaseHelper.retrieveYearsFromDB(context);
+    await firebaseHelper.retrieveYearsFromDB(context);
     notifyListeners();
   }
 
@@ -47,14 +53,10 @@ class Data extends ChangeNotifier {
     'Dec',
   ];
 
-  int latestAddedYear = 2022;
-
   int totalSpending = 0;
   void updateTotalSpending(BuildContext context) async {
     await firebaseHelper.calculateTotalSpending(
-        GlobalVariablesHelper.yearForDataFilter,
-        GlobalVariablesHelper.monthForDataFilter,
-        context);
+        currentSelectedYear, currentSelectedMonth, context);
     notifyListeners();
   }
 }

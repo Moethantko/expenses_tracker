@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/components/pressable_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../data/data.dart';
-import '../helpers/global_variables_helper.dart';
 
 class MonthsHorizontalListView extends StatefulWidget {
   const MonthsHorizontalListView({Key? key}) : super(key: key);
@@ -30,31 +30,12 @@ class _MonthsHorizontalListViewState extends State<MonthsHorizontalListView> {
 
 List<Widget> buildMonthContainersList(BuildContext context) {
   List<Widget> monthContainersList = [];
-
   for (String month
       in Provider.of<Data>(context, listen: false).allMonthsData) {
     monthContainersList.add(
-      GestureDetector(
-        onTap: () => {
-          GlobalVariablesHelper.monthForDataFilter = month,
-          Provider.of<Data>(context, listen: false).updateSnaps(),
-          Provider.of<Data>(context, listen: false)
-              .updateTotalSpending(context),
-        },
-        child: Container(
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Colors.green,
-            border: Border(
-              right: BorderSide(width: 0.1, color: Colors.white),
-            ),
-          ),
-          width: 100,
-          child: Text(
-            month,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
+      PressableWidget(
+        type: 'month',
+        month: month,
       ),
     );
   }

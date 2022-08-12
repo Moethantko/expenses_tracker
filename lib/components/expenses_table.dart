@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../data/data.dart';
@@ -15,8 +14,7 @@ class ExpensesTable extends StatefulWidget {
 class _ExpensesTable extends State<ExpensesTable> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 40),
+    return Expanded(
       child: StreamBuilder<QuerySnapshot>(
         stream: Provider.of<Data>(context).snaps,
         builder: (context, snapshot) {
@@ -24,17 +22,160 @@ class _ExpensesTable extends State<ExpensesTable> {
             return const Center(child: CircularProgressIndicator());
           }
           List<QueryDocumentSnapshot> expenses = snapshot.data!.docs;
-          List<TableRow> rowWidgets = buildHeaderAndRowItemWidgets(expenses);
+          //List<TableRow> rowWidgets = buildHeaderAndRowItemWidgets(expenses);
 
-          return Table(
-            border: TableBorder.all(),
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: rowWidgets,
-          );
+          return ListView.builder(
+              shrinkWrap: true,
+              itemCount: expenses.length,
+              itemBuilder: (BuildContext context, int index) {
+                final expense = expenses[index];
+                String id = expense.id;
+                String category = expense.get('category');
+                String price =
+                    "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
+                String date = expense.get('date').toString();
+
+                return TableRow(
+                  id: id,
+                  category: category,
+                  price: price,
+                  date: date,
+                );
+              });
         },
       ),
     );
   }
+}
+
+class TableColumn extends StatelessWidget {
+  const TableColumn({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          color: Colors.green,
+          padding: const EdgeInsets.all(5),
+          child: const Text(
+            'Category',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        Container(
+          color: Colors.green,
+          padding: const EdgeInsets.all(5),
+          child: const Text(
+            'Food',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        Container(
+          color: Colors.green,
+          padding: const EdgeInsets.all(5),
+          child: const Text(
+            'Date',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TableRow extends StatelessWidget {
+  const TableRow(
+      {Key? key,
+      required this.id,
+      required this.category,
+      required this.price,
+      required this.date,
+      this.icon})
+      : super(key: key);
+
+  final String id;
+  final String category;
+  final String price;
+  final String date;
+  final Icon? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              category,
+              style: const TextStyle(color: Colors.green),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              price,
+              style: const TextStyle(color: Colors.green),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              date,
+              style: const TextStyle(color: Colors.green),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+List<TableRow> buildTableRows(List<QueryDocumentSnapshot> expenses) {
+  List<TableRow> tableRows = [];
+
+  for (var expense in expenses) {
+    String id = expense.id;
+    String category = expense.get('category');
+    String price =
+        "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
+    String date = expense.get('date').toString();
+
+    tableRows.add(TableRow(
+      id: id,
+      category: category,
+      price: price,
+      date: date,
+    ));
+  }
+
+  return tableRows;
+}
+
+/*List<DataRow> buildDataRows(List<QueryDocumentSnapshot> expenses) {
+  List<DataRow> dataRows = [];
+
+  for (var expense in expenses) {
+    List<DataCell> dataCells = [];
+
+    String id = expense.id;
+    String category = expense.get('category');
+    String price =
+        "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
+    String date = expense.get('date').toString();
+
+    dataCells.add(DataCell(Text(category)));
+    dataCells.add(DataCell(Text(price)));
+    dataCells.add(DataCell(Text(date)));
+
+    dataRows.add(DataRow(cells: dataCells));
+  }
+  return dataRows;
 }
 
 class TableRowItem extends StatelessWidget {
@@ -72,6 +213,7 @@ class TableRowItem extends StatelessWidget {
           firebaseHelper.deleteSelectedExpenseData(id);
           Provider.of<Data>(context, listen: false)
               .updateTotalSpending(context);
+          Provider.of<Data>(context, listen: false).updateAllYearsData(context);
         },
         child: Container(
           alignment: Alignment.center,
@@ -150,4 +292,4 @@ List<TableRow> buildHeaderAndRowItemWidgets(
   }
 
   return rowWidgets;
-}
+}*/
