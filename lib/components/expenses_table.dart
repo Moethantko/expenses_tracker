@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/data.dart';
+import 'table_row_data.dart';
 
 class ExpensesTable extends StatefulWidget {
   const ExpensesTable({Key? key}) : super(key: key);
@@ -22,122 +23,21 @@ class _ExpensesTable extends State<ExpensesTable> {
             return const Center(child: CircularProgressIndicator());
           }
           List<QueryDocumentSnapshot> expenses = snapshot.data!.docs;
-          //List<TableRow> rowWidgets = buildHeaderAndRowItemWidgets(expenses);
 
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: expenses.length,
-              itemBuilder: (BuildContext context, int index) {
-                final expense = expenses[index];
-                String id = expense.id;
-                String category = expense.get('category');
-                String price =
-                    "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
-                String date = expense.get('date').toString();
-
-                return TableRow(
-                  id: id,
-                  category: category,
-                  price: price,
-                  date: date,
-                );
-              });
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: buildTableRows(expenses),
+            ),
+          );
         },
       ),
     );
   }
 }
 
-class TableColumn extends StatelessWidget {
-  const TableColumn({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          color: Colors.green,
-          padding: const EdgeInsets.all(5),
-          child: const Text(
-            'Category',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        Container(
-          color: Colors.green,
-          padding: const EdgeInsets.all(5),
-          child: const Text(
-            'Food',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        Container(
-          color: Colors.green,
-          padding: const EdgeInsets.all(5),
-          child: const Text(
-            'Date',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class TableRow extends StatelessWidget {
-  const TableRow(
-      {Key? key,
-      required this.id,
-      required this.category,
-      required this.price,
-      required this.date,
-      this.icon})
-      : super(key: key);
-
-  final String id;
-  final String category;
-  final String price;
-  final String date;
-  final Icon? icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            child: Text(
-              category,
-              style: const TextStyle(color: Colors.green),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            child: Text(
-              price,
-              style: const TextStyle(color: Colors.green),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            child: Text(
-              date,
-              style: const TextStyle(color: Colors.green),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-List<TableRow> buildTableRows(List<QueryDocumentSnapshot> expenses) {
-  List<TableRow> tableRows = [];
+List<TableRowData> buildTableRows(List<QueryDocumentSnapshot> expenses) {
+  List<TableRowData> tableRows = [];
 
   for (var expense in expenses) {
     String id = expense.id;
@@ -146,11 +46,16 @@ List<TableRow> buildTableRows(List<QueryDocumentSnapshot> expenses) {
         "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
     String date = expense.get('date').toString();
 
-    tableRows.add(TableRow(
+    tableRows.add(TableRowData(
       id: id,
       category: category,
       price: price,
       date: date,
+      containerColor: Colors.white,
+      textColor: Colors.green,
+      fontSize: 13,
+      containerPadding: 7,
+      icon: const Icon(Icons.delete_forever),
     ));
   }
 

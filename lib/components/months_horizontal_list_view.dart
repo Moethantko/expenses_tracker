@@ -16,7 +16,7 @@ class _MonthsHorizontalListViewState extends State<MonthsHorizontalListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 35,
+      height: 40,
       alignment: Alignment.centerLeft,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

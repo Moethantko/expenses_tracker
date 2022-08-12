@@ -6,6 +6,7 @@ import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../components/expenses_table.dart';
+import '../components/table_row_data.dart';
 import '../data/data.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -99,7 +100,23 @@ class _HomeScreen extends State<HomeScreen> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          const TableRowData(
+            id: 'id',
+            category: 'Category',
+            price: 'Price',
+            date: 'Date',
+            containerColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 17,
+            containerPadding: 8,
+          ),
           const ExpensesTable(),
+          const SizedBox(
+            height: 20,
+          ),
         ],
       ),
       floatingActionButton: const AddExpenseForm(),
