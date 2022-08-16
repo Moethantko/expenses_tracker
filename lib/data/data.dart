@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 
 class Data extends ChangeNotifier {
+  late User currentUser;
+
   int currentSelectedYear = 2022;
 
   void updateCurrentSelectedYear(newYear) {
@@ -13,12 +16,13 @@ class Data extends ChangeNotifier {
   String currentSelectedMonth = 'Aug';
 
   FirebaseHelper firebaseHelper = FirebaseHelper();
-  late Stream<QuerySnapshot<Map<String, dynamic>>> snaps = firebaseHelper
-      .filterExpensesDataByYearMonth(currentSelectedYear, currentSelectedMonth);
+  late Stream<QuerySnapshot<Map<String, dynamic>>> snaps =
+      firebaseHelper.filterExpensesDataByYearMonth(
+          currentSelectedYear, currentSelectedMonth, currentUser.email);
 
   void updateSnaps() {
     snaps = firebaseHelper.filterExpensesDataByYearMonth(
-        currentSelectedYear, currentSelectedMonth);
+        currentSelectedYear, currentSelectedMonth, currentUser.email);
     notifyListeners();
   }
 
@@ -30,9 +34,8 @@ class Data extends ChangeNotifier {
 
   int latestAddedYear = 2022;
 
-  List<int> allYearsData = [2019, 2020, 2021, 2022];
+  List<int> allYearsData = [2019, 2020, 2021, 2022, 2023];
   updateAllYearsData(BuildContext context) async {
-    //allYearsData.add(latestAddedYear);
     allYearsData.sort();
     await firebaseHelper.retrieveYearsFromDB(context);
     notifyListeners();
@@ -45,7 +48,7 @@ class Data extends ChangeNotifier {
     'Apr',
     'May',
     'Jun',
-    'July',
+    'Jul',
     'Aug',
     'Sep',
     'Oct',
@@ -53,7 +56,7 @@ class Data extends ChangeNotifier {
     'Dec',
   ];
 
-  int totalSpending = 0;
+  double totalSpending = 0;
   void updateTotalSpending(BuildContext context) async {
     await firebaseHelper.calculateTotalSpending(
         currentSelectedYear, currentSelectedMonth, context);

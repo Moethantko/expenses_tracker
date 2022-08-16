@@ -40,11 +40,9 @@ class _AddExpenseForm extends State<AddExpenseForm> {
   }
 
   _showAddExpenseForm(context) {
-    int price = 0;
+    double price = 0;
     DateHelper dateHelper = DateHelper();
     FirebaseHelper firebaseHelper = FirebaseHelper();
-
-    //print('Test: ${GlobalVariablesHelper.totalSpending}');
 
     Alert(
         context: context,
@@ -55,7 +53,7 @@ class _AddExpenseForm extends State<AddExpenseForm> {
             TextField(
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                price = int.parse(value);
+                price = double.parse(value);
               },
               decoration: const InputDecoration(
                 icon: Icon(
@@ -81,13 +79,18 @@ class _AddExpenseForm extends State<AddExpenseForm> {
         buttons: [
           DialogButton(
             onPressed: () => {
-              firebaseHelper.storeExpenseData(Expense(
-                  category: Provider.of<Data>(context, listen: false)
-                      .currentSelectedCategory,
-                  price: price,
-                  date: _dateFieldController.text,
-                  year: dateHelper.retrieveYear(_dateFieldController.text),
-                  month: dateHelper.retrieveMonth(_dateFieldController.text))),
+              firebaseHelper.storeExpenseData(
+                Expense(
+                    category: Provider.of<Data>(context, listen: false)
+                        .currentSelectedCategory,
+                    price: price,
+                    date: _dateFieldController.text,
+                    year: dateHelper.retrieveYear(_dateFieldController.text),
+                    month: dateHelper.retrieveMonth(_dateFieldController.text),
+                    username: Provider.of<Data>(context, listen: false)
+                        .currentUser
+                        .email!),
+              ),
               Provider.of<Data>(context, listen: false)
                   .updateAllYearsData(context),
               Provider.of<Data>(context, listen: false)

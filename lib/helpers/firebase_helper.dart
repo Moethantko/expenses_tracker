@@ -11,7 +11,8 @@ class FirebaseHelper {
       'price': expense.price,
       'date': expense.date,
       'year': expense.year,
-      'month': expense.month
+      'month': expense.month,
+      'user': expense.username,
     });
   }
 
@@ -23,8 +24,12 @@ class FirebaseHelper {
   }
 
   retrieveYearsFromDB(BuildContext context) async {
-    final result =
-        await FirebaseFirestore.instance.collection('expenses').get();
+    final result = await FirebaseFirestore.instance
+        .collection('expenses')
+        .where('user',
+            isEqualTo:
+                Provider.of<Data>(context, listen: false).currentUser.email)
+        .get();
     for (var doc in result.docs) {
       if (!Provider.of<Data>(context, listen: false)
           .allYearsData
@@ -37,42 +42,29 @@ class FirebaseHelper {
     }
   }
 
-  /*retrieveMonthsFromDB(context) async {
-    await FirebaseFirestore.instance
-        .collection('expenses')
-        .snapshots()
-        .forEach((snap) {
-      final docs = snap.docs;
-      for (var doc in docs) {
-        final month = doc.get('month').toString();
-        if (!GlobalVariablesHelper.allMonthsData.contains(month)) {
-          GlobalVariablesHelper.allMonthsData.add(month);
-        }
-      }
-    });
-  }*/
-
   Stream<QuerySnapshot<Map<String, dynamic>>> filterExpensesDataByYearMonth(
-      selectedYear, selectedMonth) {
+      selectedYear, selectedMonth, currentUser) {
     return FirebaseFirestore.instance
         .collection('expenses')
         .where("year", isEqualTo: selectedYear)
         .where("month", isEqualTo: selectedMonth)
+        .where("user", isEqualTo: currentUser)
         .snapshots();
   }
 
   calculateTotalSpending(selectedYear, selectedMonth, context) async {
-    int totalSpending = 0;
-
+    double totalSpending = 0;
     final result = await FirebaseFirestore.instance
         .collection('expenses')
         .where("year", isEqualTo: selectedYear)
         .where("month", isEqualTo: selectedMonth)
+        .where("user",
+            isEqualTo:
+                Provider.of<Data>(context, listen: false).currentUser.email)
         .get();
     for (final doc in result.docs) {
-      totalSpending += int.parse(doc.get('price').toString());
+      totalSpending += double.parse(doc.get('price').toString());
     }
     Provider.of<Data>(context, listen: false).totalSpending = totalSpending;
-    //print(Provider.of<Data>(context, listen: false).totalSpending);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/components/add_expense_form.dart';
 import 'package:personal_expenses_tracker/components/months_horizontal_list_view.dart';
@@ -10,8 +11,8 @@ import '../components/table_row_data.dart';
 import '../data/data.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String title;
-  HomeScreen({Key? key, required this.title}) : super(key: key);
+  static const String id = 'home_screen';
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreen createState() => _HomeScreen();
@@ -19,6 +20,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreen extends State<HomeScreen> {
   FirebaseHelper firebaseHelper = FirebaseHelper();
+
+  @override
+  void initState() {
+    getCurrentUser();
+    //print('Testing purpose: ${firebaseUser.email}');
+    super.initState();
+  }
+
+  void getCurrentUser() async {
+    try {
+      Provider.of<Data>(context, listen: false).currentUser =
+          FirebaseAuth.instance.currentUser!;
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +50,9 @@ class _HomeScreen extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text(
-              widget.title,
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(
-              width: 125,
-            ),
-          ],
+        title: const Text(
+          'Expenses Tracker',
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Column(
@@ -51,40 +61,41 @@ class _HomeScreen extends State<HomeScreen> {
           const SizedBox(height: 0.5),
           const MonthsHorizontalListView(),
           Container(
-              margin: const EdgeInsets.only(top: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Total Spending for ',
-                    style: TextStyle(color: Colors.green, fontSize: 16),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                    decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Text(
-                      currentSelectedYear.toString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                    decoration: BoxDecoration(
+            margin: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Total Spending for ',
+                  style: TextStyle(color: Colors.green, fontSize: 16),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      currentSelectedMonth,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text(
+                    currentSelectedYear.toString(),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                ],
-              )),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    currentSelectedMonth,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Center(
             child: Container(
               padding: const EdgeInsets.all(5),
