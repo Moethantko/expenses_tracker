@@ -4,6 +4,7 @@ import 'package:personal_expenses_tracker/components/add_expense_form.dart';
 import 'package:personal_expenses_tracker/components/months_horizontal_list_view.dart';
 import 'package:personal_expenses_tracker/components/years_horizontal_list_view.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
+import 'package:personal_expenses_tracker/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../components/expenses_table.dart';
@@ -24,7 +25,6 @@ class _HomeScreen extends State<HomeScreen> {
   @override
   void initState() {
     getCurrentUser();
-    //print('Testing purpose: ${firebaseUser.email}');
     super.initState();
   }
 
@@ -47,13 +47,28 @@ class _HomeScreen extends State<HomeScreen> {
     firebaseHelper.retrieveYearsFromDB(context);
     firebaseHelper.calculateTotalSpending(
         currentSelectedYear, currentSelectedMonth, context);
+    Provider.of<Data>(context, listen: false).updateSnaps();
+    Provider.of<Data>(context, listen: false).updateTotalSpending(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Expenses Tracker',
-          style: TextStyle(color: Colors.white),
-        ),
+        title:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text(
+            'Expenses Tracker',
+            style: TextStyle(color: Colors.white),
+          ),
+          GestureDetector(
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushReplacementNamed(context, LoginScreen.id);
+            },
+            child: const Text(
+              'Log Out',
+              style: TextStyle(fontSize: 18),
+            ),
+          )
+        ]),
       ),
       body: Column(
         children: [

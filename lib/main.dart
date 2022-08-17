@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/screens/login_screen.dart';
 import 'package:personal_expenses_tracker/screens/signup_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -122,10 +123,11 @@ class _MyAppState extends State<MyApp> {
           }
         },
       ),
-      initialRoute: SignUpScreen.id,
+      initialRoute: LoginScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
-        SignUpScreen.id: (context) => SignUpScreen(),
+        SignUpScreen.id: (context) => const SignUpScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
       },
     );
   }

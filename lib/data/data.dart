@@ -1,19 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 
 class Data extends ChangeNotifier {
   late User currentUser;
 
-  int currentSelectedYear = 2022;
+  int currentSelectedYear =
+      int.parse(DateFormat('yyyy').format(DateTime.now()));
 
   void updateCurrentSelectedYear(newYear) {
     currentSelectedYear = newYear;
     notifyListeners();
   }
 
-  String currentSelectedMonth = 'Aug';
+  String currentSelectedMonth = DateFormat('MMMM').format(DateTime.now());
 
   FirebaseHelper firebaseHelper = FirebaseHelper();
   late Stream<QuerySnapshot<Map<String, dynamic>>> snaps =

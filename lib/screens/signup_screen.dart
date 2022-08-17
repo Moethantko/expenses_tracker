@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:personal_expenses_tracker/screens/home.dart';
+import 'package:personal_expenses_tracker/screens/login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -71,10 +73,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Expenses Tracker',
-          style: TextStyle(color: Colors.white),
-        ),
+        title:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text(
+            'Expenses Tracker',
+            style: TextStyle(color: Colors.white),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushReplacementNamed(context, LoginScreen.id);
+            },
+            child: const Text(
+              'Log In',
+              style: TextStyle(fontSize: 16),
+            ),
+          )
+        ]),
       ),
       body: Container(
         padding: const EdgeInsets.all(30),
@@ -82,6 +96,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            IconButton(
+              icon: const FaIcon(FontAwesomeIcons.moneyBills),
+              color: Colors.green,
+              iconSize: 70,
+              onPressed: () {
+                print("Pressed");
+              },
+            ),
             TextField(
               keyboardType: TextInputType.emailAddress,
               onChanged: (value) {
@@ -137,7 +159,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     UserCredential userCredential = await FirebaseAuth.instance
                         .createUserWithEmailAndPassword(
                             email: email, password: password);
-                    //print('Testing purposes: ${userCredential.user}');
                     Navigator.pushReplacementNamed(context, HomeScreen.id);
                   } catch (e) {
                     print(e);

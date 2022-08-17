@@ -46,8 +46,6 @@ List<TableRowData> buildTableRows(List<QueryDocumentSnapshot> expenses) {
         "${String.fromCharCodes(Runes('\u0024'))}${expense.get('price').toString()}";
     String date = expense.get('date').toString();
 
-    //print('Testing purposes: $category');
-
     tableRows.add(TableRowData(
       id: id,
       category: category,
