@@ -99,8 +99,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     setState(() {
                       userNotFoundWarningDisplayed = true;
                     });
-                  } else if (e.code == 'wrong-password') {
-                    passwordIncorrectWarningDisplayed = true;
+                  } else {
+                    setState(() {
+                      userNotFoundWarningDisplayed = false;
+                    });
+                  }
+
+                  if (e.code == 'wrong-password') {
+                    setState(() {
+                      passwordIncorrectWarningDisplayed = true;
+                    });
+                  } else {
+                    setState(() {
+                      passwordIncorrectWarningDisplayed = false;
+                    });
                   }
                 }
               },

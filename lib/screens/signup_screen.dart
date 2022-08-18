@@ -18,7 +18,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String passwordConfirm = '';
   bool passwordCharWarningDisplayed = false;
   bool passwordNotMatchWarningDisplayed = false;
-  bool emailWarningHidden = false;
+  bool emailWarningDisplayed = false;
+  bool weakPasswordWarningHidden = false;
+  bool emailAlreadyUsedWarningHidden = false;
 
   bool isEmailCorrectlyFormatted(String email) {
     if (email == null || email.isEmpty) {
@@ -57,12 +59,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (!isEmailCorrectlyFormatted(email)) {
       setState(() {
-        emailWarningHidden = true;
+        emailWarningDisplayed = true;
       });
       return false;
     } else {
       setState(() {
-        emailWarningHidden = false;
+        emailWarningDisplayed = false;
       });
     }
 
@@ -114,8 +116,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               decoration: const InputDecoration(hintText: "Email"),
             ),
             Visibility(
-              visible: emailWarningHidden,
+              visible: emailWarningDisplayed,
               child: const Text('Email is not in correct format.'),
+            ),
+            Visibility(
+              visible: emailAlreadyUsedWarningHidden,
+              child: const Text('Email is already taken.'),
             ),
             TextField(
               obscureText: true,
@@ -134,6 +140,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Visibility(
               visible: passwordNotMatchWarningDisplayed,
               child: const Text('Password does not match.'),
+            ),
+            Visibility(
+              visible: weakPasswordWarningHidden,
+              child: const Text('Password is weak.'),
             ),
             TextField(
               obscureText: true,
@@ -160,6 +170,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         .createUserWithEmailAndPassword(
                             email: email, password: password);
                     Navigator.pushReplacementNamed(context, HomeScreen.id);
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      setState(() {
+                        weakPasswordWarningHidden = true;
+                      });
+                    } else {
+                      setState(() {
+                        weakPasswordWarningHidden = false;
+                      });
+                    }
+
+                    if (e.code == 'email-already-in-use') {
+                      setState(() {
+                        emailAlreadyUsedWarningHidden = true;
+                      });
+                    } else {
+                      setState(() {
+                        emailAlreadyUsedWarningHidden = false;
+                      });
+                    }
                   } catch (e) {
                     print(e);
                   }

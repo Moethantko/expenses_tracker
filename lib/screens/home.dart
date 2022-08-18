@@ -47,8 +47,12 @@ class _HomeScreen extends State<HomeScreen> {
     firebaseHelper.retrieveYearsFromDB(context);
     firebaseHelper.calculateTotalSpending(
         currentSelectedYear, currentSelectedMonth, context);
-    Provider.of<Data>(context, listen: false).updateSnaps();
-    Provider.of<Data>(context, listen: false).updateTotalSpending(context);
+    Provider.of<Data>(context, listen: false).snaps =
+        firebaseHelper.filterExpensesDataByYearMonth(
+            currentSelectedYear,
+            currentSelectedMonth,
+            Provider.of<Data>(context, listen: false).currentUser.email);
+    //Provider.of<Data>(context, listen: false).updateTotalSpending(context);
 
     return Scaffold(
       appBar: AppBar(

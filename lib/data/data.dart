@@ -15,7 +15,7 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  String currentSelectedMonth = DateFormat('MMMM').format(DateTime.now());
+  String currentSelectedMonth = DateFormat('MMM').format(DateTime.now());
 
   FirebaseHelper firebaseHelper = FirebaseHelper();
   late Stream<QuerySnapshot<Map<String, dynamic>>> snaps =

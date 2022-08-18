@@ -44,7 +44,7 @@ class FirebaseHelper {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> filterExpensesDataByYearMonth(
       selectedYear, selectedMonth, currentUser) {
-    print('Testing purposes in filtering :: $selectedMonth}');
+    //print('Testing purposes in filtering :: $selectedMonth}');
     return FirebaseFirestore.instance
         .collection('expenses')
         .where("year", isEqualTo: selectedYear)
