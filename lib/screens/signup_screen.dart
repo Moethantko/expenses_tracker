@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:personal_expenses_tracker/helpers/auth_helper.dart';
 import 'package:personal_expenses_tracker/screens/home.dart';
 import 'package:personal_expenses_tracker/screens/login_screen.dart';
 
@@ -21,6 +22,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool emailWarningDisplayed = false;
   bool weakPasswordWarningHidden = false;
   bool emailAlreadyUsedWarningHidden = false;
+
+  AuthHelper authHelper = AuthHelper();
 
   bool isEmailCorrectlyFormatted(String email) {
     if (email == null || email.isEmpty) {
@@ -166,10 +169,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               onPressed: () async {
                 if (isRequirementsSatisfied()) {
                   try {
-                    UserCredential userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: email, password: password);
-                    Navigator.pushReplacementNamed(context, HomeScreen.id);
+                    UserCredential userCredential =
+                        await authHelper.signUp(email, password);
+                    Navigator.pushReplacementNamed(context, HomeScreen.id,
+                        arguments: userCredential);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'weak-password') {
                       setState(() {

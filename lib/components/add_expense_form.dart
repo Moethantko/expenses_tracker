@@ -79,6 +79,14 @@ class _AddExpenseForm extends State<AddExpenseForm> {
         buttons: [
           DialogButton(
             onPressed: () => {
+              if (price < 0)
+                {
+                  price = 0,
+                }
+              else
+                {
+                  price = double.parse(price.toStringAsFixed(3)),
+                },
               firebaseHelper.storeExpenseData(
                 Expense(
                     category: Provider.of<Data>(context, listen: false)

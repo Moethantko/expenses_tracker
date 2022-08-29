@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_expenses_tracker/components/add_expense_form.dart';
 import 'package:personal_expenses_tracker/components/months_horizontal_list_view.dart';
 import 'package:personal_expenses_tracker/components/years_horizontal_list_view.dart';
+import 'package:personal_expenses_tracker/helpers/auth_helper.dart';
 import 'package:personal_expenses_tracker/helpers/firebase_helper.dart';
 import 'package:personal_expenses_tracker/screens/login_screen.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ import '../data/data.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreen createState() => _HomeScreen();
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreen extends State<HomeScreen> {
   FirebaseHelper firebaseHelper = FirebaseHelper();
+  AuthHelper authHelper = AuthHelper();
 
   @override
   void initState() {
@@ -45,14 +47,15 @@ class _HomeScreen extends State<HomeScreen> {
         Provider.of<Data>(context, listen: true).currentSelectedMonth;
 
     firebaseHelper.retrieveYearsFromDB(context);
+
     firebaseHelper.calculateTotalSpending(
         currentSelectedYear, currentSelectedMonth, context);
+
     Provider.of<Data>(context, listen: false).snaps =
         firebaseHelper.filterExpensesDataByYearMonth(
             currentSelectedYear,
             currentSelectedMonth,
             Provider.of<Data>(context, listen: false).currentUser.email);
-    //Provider.of<Data>(context, listen: false).updateTotalSpending(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +67,7 @@ class _HomeScreen extends State<HomeScreen> {
           ),
           GestureDetector(
             onTap: () {
-              FirebaseAuth.instance.signOut();
+              authHelper.signOut();
               Navigator.pushReplacementNamed(context, LoginScreen.id);
             },
             child: const Text(

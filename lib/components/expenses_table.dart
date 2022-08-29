@@ -21,6 +21,8 @@ class _ExpensesTable extends State<ExpensesTable> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Text("Something went wrong");
           }
           List<QueryDocumentSnapshot> expenses = snapshot.data!.docs;
 

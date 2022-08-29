@@ -4,6 +4,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_expenses_tracker/helpers/auth_helper.dart';
+import 'package:personal_expenses_tracker/screens/delete_account_screen.dart';
 import 'package:personal_expenses_tracker/screens/login_screen.dart';
 import 'package:personal_expenses_tracker/screens/signup_screen.dart';
 import 'package:provider/provider.dart';
@@ -28,9 +30,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
+  AuthHelper authHelper = AuthHelper();
+  String initialScreen = LoginScreen.id;
 
   bool _isInternetConnected = false;
-
   Future<void> _checkConnectivityState() async {
     final ConnectivityResult result = await Connectivity().checkConnectivity();
 
@@ -51,54 +54,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    checkIfTokenExists();
     _checkConnectivityState();
     super.initState();
   }
 
-  /*late StreamSubscription subscription;
-  var isDeviceConnected = false;
-  bool isAlertSet = false;
-
-  getInternetConnectivity() => subscription = Connectivity()
-          .onConnectivityChanged
-          .listen((ConnectivityResult result) async {
-        isDeviceConnected = await InternetConnectionChecker().hasConnection;
-        //print('Is device connected: ${isDeviceConnected}');
-
-        if (isDeviceConnected == false && isAlertSet == false) {
-          print('device is not connected......');
-          showConnectionAlert();
-          setState(() {
-            isAlertSet = true;
-          });
-        }
-      });
-
-  @override
-  void initState() {
-    getInternetConnectivity();
-    super.initState();
+  void checkIfTokenExists() async {
+    if (await authHelper.getToken() != null) {
+      initialScreen = SignUpScreen.id;
+    } else {
+      initialScreen = LoginScreen.id;
+    }
   }
-
-  showConnectionAlert() => showCupertinoDialog<String>(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: const Text('No Connection'),
-          content: const Text('Please check your internet connectivity'),
-          actions: [
-            TextButton(
-              onPressed: () {},
-              child: const Text('OK'),
-            )
-          ],
-        ),
-      );
-
-  @override
-  void dispose() {
-    subscription.cancel();
-    super.dispose();
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -123,11 +90,12 @@ class _MyAppState extends State<MyApp> {
           }
         },
       ),
-      initialRoute: LoginScreen.id,
+      initialRoute: initialScreen,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
         SignUpScreen.id: (context) => const SignUpScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
+        DeleteAccountScreen.id: (context) => const DeleteAccountScreen(),
       },
     );
   }

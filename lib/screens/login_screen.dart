@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:personal_expenses_tracker/helpers/auth_helper.dart';
+import 'package:personal_expenses_tracker/screens/delete_account_screen.dart';
 import 'package:personal_expenses_tracker/screens/home.dart';
 
 import 'signup_screen.dart';
@@ -18,6 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = '';
   bool userNotFoundWarningDisplayed = false;
   bool passwordIncorrectWarningDisplayed = false;
+
+  AuthHelper authHelper = AuthHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +95,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email, password: password);
-                  Navigator.pushReplacementNamed(context, HomeScreen.id);
+                  UserCredential userCredential =
+                      await authHelper.signIn(email, password);
+                  Navigator.pushReplacementNamed(context, HomeScreen.id,
+                      arguments: userCredential);
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'user-not-found') {
                     setState(() {
@@ -117,6 +122,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: const Text('Log In'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, DeleteAccountScreen.id);
+                  },
+                  child: const Text(
+                    'Delete an existing account',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                        decoration: TextDecoration.underline),
+                  ),
+                )
+              ],
             )
           ],
         ),
